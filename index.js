@@ -30,7 +30,24 @@ async function run() {
         const testimonialCollection = client.db('endGameColleges').collection('testimonials');
         const collegesCollection = client.db('endGameColleges').collection('colleges');
 
-       
+        //users api
+        app.post('/users', async (req, res) => {
+            const user = req.body;
+            const query = { email: user.email }
+            const existingUser = await usersCollection.findOne(query)
+            if (existingUser) {
+                return (res.send({ message: 'Already Your account exist.' }))
+            }
+            const result = await usersCollection.insertOne(user);
+            res.send(result)
+        })
+        app.get('/users', async (req, res) => {
+            const result = await usersCollection.find().toArray();
+            res.send(result)
+        })
+
+        
+
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
