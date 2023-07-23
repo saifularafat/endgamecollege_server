@@ -52,7 +52,11 @@ async function run() {
             res.send(result)
         })
 
-
+        // testimonials api 
+        app.get('/testimonials', async (req, res) => {
+            const result = await testimonialCollection.find().toArray();
+            res.send(result)
+        })
 
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
