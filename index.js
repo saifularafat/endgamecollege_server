@@ -29,6 +29,7 @@ async function run() {
         const usersCollection = client.db('endGameColleges').collection('users');
         const testimonialCollection = client.db('endGameColleges').collection('testimonials');
         const collegesCollection = client.db('endGameColleges').collection('colleges');
+        const admissionCollection = client.db('endGameColleges').collection('admissions');
 
         //users api
         app.post('/users', async (req, res) => {
@@ -55,6 +56,18 @@ async function run() {
         // testimonials api 
         app.get('/testimonials', async (req, res) => {
             const result = await testimonialCollection.find().toArray();
+            res.send(result)
+        })
+
+         //admissions api
+         app.post("/admissions", async (req, res) => {
+            const admission = req.body;
+            const result = await admissionCollection.insertOne(admission);
+            res.send(result);
+          });
+
+        app.get('/admissions', async (req, res) => {
+            const result = await admissionCollection.find().toArray();
             res.send(result)
         })
 
