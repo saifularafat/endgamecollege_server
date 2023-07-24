@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 require("dotenv").config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000;
 
 // middleware
@@ -46,6 +46,28 @@ async function run() {
             const result = await usersCollection.find().toArray();
             res.send(result)
         })
+        app.get("/users/:email", async (req, res) => {
+            const email = req.params.email;
+            const query = { email: email }
+            const result = await usersCollection.find(query).toArray();
+            res.send(result);
+        });
+        app.patch('/users/:email', async (req, res) => {
+            const email = req.params.email;
+            const filter = { email: new ObjectId(email) };
+            const options = { upsert: true };
+            const usersUpdate = req.body;
+            const info = {
+              $set: {
+                name: usersUpdate.name,
+                email: usersUpdate.email,
+                address: usersUpdate.address,
+                university: usersUpdate.university
+              }
+            }
+            const result = await usersCollection.updateOne( filter, info, options);
+            res.send(result)
+          })
 
         // colleges api 
         app.get('/colleges', async (req, res) => {
@@ -59,12 +81,12 @@ async function run() {
             res.send(result)
         })
 
-         //admissions api
-         app.post("/admissions", async (req, res) => {
+        //admissions api
+        app.post("/admissions", async (req, res) => {
             const admission = req.body;
             const result = await admissionCollection.insertOne(admission);
             res.send(result);
-          });
+        });
 
         app.get('/admissions', async (req, res) => {
             const result = await admissionCollection.find().toArray();
