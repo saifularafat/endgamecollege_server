@@ -31,6 +31,17 @@ async function run() {
         const collegesCollection = client.db('endGameColleges').collection('colleges');
         const admissionCollection = client.db('endGameColleges').collection('admissions');
 
+        /* search field rout */
+        app.get('/searchFieldColleges/:text', async (req, res) => {
+            const searchText = req.params.text;
+            const result = await collegesCollection.find({
+                $or: [
+                    { college_name: { $regex: searchText, $options: "i" } },
+                ]
+            }).toArray();
+            res.send(result)
+        })
+
         //users api
         app.post('/users', async (req, res) => {
             const user = req.body;
@@ -58,16 +69,16 @@ async function run() {
             const options = { upsert: true };
             const usersUpdate = req.body;
             const info = {
-              $set: {
-                name: usersUpdate.name,
-                email: usersUpdate.email,
-                address: usersUpdate.address,
-                university: usersUpdate.university
-              }
+                $set: {
+                    name: usersUpdate.name,
+                    email: usersUpdate.email,
+                    address: usersUpdate.address,
+                    university: usersUpdate.university
+                }
             }
-            const result = await usersCollection.updateOne( filter, info, options);
+            const result = await usersCollection.updateOne(filter, info, options);
             res.send(result)
-          })
+        })
 
         // colleges api 
         app.get('/colleges', async (req, res) => {
