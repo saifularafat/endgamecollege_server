@@ -30,6 +30,8 @@ async function run() {
         const testimonialCollection = client.db('endGameColleges').collection('testimonials');
         const collegesCollection = client.db('endGameColleges').collection('colleges');
         const admissionCollection = client.db('endGameColleges').collection('admissions');
+        const aboutEventsCollection = client.db('endGameColleges').collection('aboutEvents');
+        const researchCollection = client.db('endGameColleges').collection('research');
 
         /* search field rout */
         app.get('/searchFieldColleges/:text', async (req, res) => {
@@ -83,6 +85,19 @@ async function run() {
         // colleges api 
         app.get('/colleges', async (req, res) => {
             const result = await collegesCollection.find().toArray();
+            res.send(result)
+        })
+
+        // aboutEvents api 
+        app.get('/aboutEvents', async (req, res) => {
+            const result = await aboutEventsCollection.find().toArray();
+            res.send(result)
+        })
+
+
+        // research's api 
+        app.get('/researchs', async (req, res) => {
+            const result = await researchCollection.find().toArray();
             res.send(result)
         })
 
